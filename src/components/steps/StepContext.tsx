@@ -32,7 +32,7 @@ export function StepContext({ value, onChange }: StepContextProps) {
         id="context"
         placeholder="The context is..."
         value={value}
-        onChange={e => onChange(`Context: ${e.target.value}`)}
+        onChange={e => onChange(e.target.value)}
         className="min-h-[120px] resize-none border-2 border-gray-200 focus:border-blue-500 transition-colors"
       />
 
