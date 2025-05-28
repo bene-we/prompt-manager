@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -54,23 +53,25 @@ export const PromptManager = () => {
   };
 
   const generatePrompt = () => {
-    const prompt = `<role>
-${promptData.role}
-</role>
-
-<context>
-${promptData.context}
-</context>
-
-<task>
-${promptData.task}
-</task>
-
-<output_format>
-${promptData.outputFormat}
-</output_format>`;
-
-    return prompt;
+    const parts = [];
+    
+    if (promptData.role) {
+      parts.push(promptData.role);
+    }
+    
+    if (promptData.context) {
+      parts.push(promptData.context);
+    }
+    
+    if (promptData.task) {
+      parts.push(promptData.task);
+    }
+    
+    if (promptData.outputFormat) {
+      parts.push(promptData.outputFormat);
+    }
+    
+    return parts.join('\n\n');
   };
 
   const copyToClipboard = async () => {
