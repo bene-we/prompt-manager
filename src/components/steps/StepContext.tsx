@@ -1,23 +1,22 @@
-
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from '@/components/ui/badge'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 
 interface StepContextProps {
-  value: string;
-  onChange: (value: string) => void;
+  value: string
+  onChange: (value: string) => void
 }
 
 const contextExamples = [
-  "Working on a startup project",
-  "Large enterprise environment",
-  "Educational content creation",
-  "Personal productivity improvement",
-  "Team collaboration project",
-  "Client presentation",
-];
+  'Working on a startup project',
+  'Large enterprise environment',
+  'Educational content creation',
+  'Personal productivity improvement',
+  'Team collaboration project',
+  'Client presentation',
+]
 
-export const StepContext = ({ value, onChange }: StepContextProps) => {
+export function StepContext({ value, onChange }: StepContextProps) {
   return (
     <div className="space-y-4">
       <div>
@@ -33,7 +32,7 @@ export const StepContext = ({ value, onChange }: StepContextProps) => {
         id="context"
         placeholder="The context is..."
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={e => onChange(`Context: ${e.target.value}`)}
         className="min-h-[120px] resize-none border-2 border-gray-200 focus:border-blue-500 transition-colors"
       />
 
@@ -55,5 +54,5 @@ export const StepContext = ({ value, onChange }: StepContextProps) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

@@ -1,23 +1,22 @@
-
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from '@/components/ui/badge'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 
 interface StepTaskProps {
-  value: string;
-  onChange: (value: string) => void;
+  value: string
+  onChange: (value: string) => void
 }
 
 const taskExamples = [
-  "Analyze and provide insights",
-  "Create a detailed plan",
-  "Write comprehensive documentation",
-  "Design a solution",
-  "Optimize existing process",
-  "Generate creative ideas",
-];
+  'Analyze and provide insights',
+  'Create a detailed plan',
+  'Write comprehensive documentation',
+  'Design a solution',
+  'Optimize existing process',
+  'Generate creative ideas',
+]
 
-export const StepTask = ({ value, onChange }: StepTaskProps) => {
+export function StepTask({ value, onChange }: StepTaskProps) {
   return (
     <div className="space-y-4">
       <div>
@@ -33,7 +32,7 @@ export const StepTask = ({ value, onChange }: StepTaskProps) => {
         id="task"
         placeholder="I need you to..."
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={e => onChange(e.target.value)}
         className="min-h-[120px] resize-none border-2 border-gray-200 focus:border-blue-500 transition-colors"
       />
 
@@ -55,5 +54,5 @@ export const StepTask = ({ value, onChange }: StepTaskProps) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

@@ -1,96 +1,125 @@
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { ChevronLeft, ChevronRight, Copy, Check } from "lucide-react";
-import { StepRole } from "./steps/StepRole";
-import { StepContext } from "./steps/StepContext";
-import { StepTask } from "./steps/StepTask";
-import { StepOutputFormat } from "./steps/StepOutputFormat";
-import { PromptPreview } from "./PromptPreview";
-import { useToast } from "@/hooks/use-toast";
+import {
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Copy,
+} from 'lucide-react'
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
+import { useToast } from '@/hooks/use-toast'
+import { PromptPreview } from './PromptPreview'
+import { StepContext } from './steps/StepContext'
+import { StepOutputFormat } from './steps/StepOutputFormat'
+import { StepRole } from './steps/StepRole'
+import { StepTask } from './steps/StepTask'
 
 export interface PromptData {
-  role: string;
-  context: string;
-  task: string;
-  outputFormat: string;
+  role: string
+  context: string
+  task: string
+  outputFormat: string
 }
 
 const steps = [
-  { id: 0, title: "Get Started", description: "Begin creating your structured prompt" },
-  { id: 1, title: "Role", description: "Define who the AI should act as" },
-  { id: 2, title: "Context", description: "Provide background information" },
-  { id: 3, title: "Task", description: "Specify what needs to be done" },
-  { id: 4, title: "Output Format", description: "Define the desired response structure" },
-];
+  {
+    id: 0,
+    title: 'Get Started',
+    description: 'Begin creating your structured prompt',
+  },
+  {
+    id: 1,
+    title: 'Role',
+    description: 'Define who the AI should act as',
+  },
+  {
+    id: 2,
+    title: 'Context',
+    description: 'Provide background information',
+  },
+  {
+    id: 3,
+    title: 'Task',
+    description: 'Specify what needs to be done',
+  },
+  {
+    id: 4,
+    title: 'Output Format',
+    description: 'Define the desired response structure',
+  },
+]
 
-export const PromptManager = () => {
-  const [currentStep, setCurrentStep] = useState(0);
+export function PromptManager() {
+  const [currentStep, setCurrentStep] = useState(0)
   const [promptData, setPromptData] = useState<PromptData>({
-    role: "",
-    context: "",
-    task: "",
-    outputFormat: "",
-  });
-  const [copied, setCopied] = useState(false);
-  const { toast } = useToast();
+    role: '',
+    context: '',
+    task: '',
+    outputFormat: '',
+  })
+  const [copied, setCopied] = useState(false)
+  const { toast } = useToast()
 
   const updatePromptData = (field: keyof PromptData, value: string) => {
-    setPromptData(prev => ({ ...prev, [field]: value }));
-  };
+    setPromptData(prev => ({
+      ...prev,
+      [field]: value,
+    }))
+  }
 
   const nextStep = () => {
     if (currentStep < 4) {
-      setCurrentStep(currentStep + 1);
+      setCurrentStep(currentStep + 1)
     }
-  };
+  }
 
   const prevStep = () => {
     if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
+      setCurrentStep(currentStep - 1)
     }
-  };
+  }
 
   const generatePrompt = () => {
-    const parts = [];
-    
+    const parts = []
+
     if (promptData.role) {
-      parts.push(promptData.role);
+      parts.push(promptData.role)
     }
-    
+
     if (promptData.context) {
-      parts.push(promptData.context);
+      parts.push(promptData.context)
     }
-    
+
     if (promptData.task) {
-      parts.push(promptData.task);
+      parts.push(promptData.task)
     }
-    
+
     if (promptData.outputFormat) {
-      parts.push(promptData.outputFormat);
+      parts.push(promptData.outputFormat)
     }
-    
-    return parts.join('\n\n');
-  };
+
+    return parts.join('\n\n')
+  }
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(generatePrompt());
-      setCopied(true);
+      await navigator.clipboard.writeText(generatePrompt())
+      setCopied(true)
       toast({
-        title: "Copied!",
-        description: "Prompt has been copied to clipboard",
-      });
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      toast({
-        title: "Error",
-        description: "Failed to copy prompt to clipboard",
-        variant: "destructive",
-      });
+        title: 'Copied!',
+        description: 'Prompt has been copied to clipboard',
+      })
+      setTimeout(() => setCopied(false), 2000)
     }
-  };
+    catch {
+      toast({
+        title: 'Error',
+        description: 'Failed to copy prompt to clipboard',
+        variant: 'destructive',
+      })
+    }
+  }
 
   const renderStep = () => {
     switch (currentStep) {
@@ -100,7 +129,7 @@ export const PromptManager = () => {
             <div className="space-y-4">
               <h3 className="text-2xl font-semibold text-gray-900">Welcome to Prompt Manager</h3>
               <p className="text-gray-600 max-w-md mx-auto">
-                Create structured, effective prompts with our guided 4-step process. 
+                Create structured, effective prompts with our guided 4-step process.
                 Click "Start" to begin building your AI prompt.
               </p>
             </div>
@@ -111,22 +140,22 @@ export const PromptManager = () => {
               Start Building Your Prompt
             </Button>
           </div>
-        );
+        )
       case 1:
-        return <StepRole value={promptData.role} onChange={(value) => updatePromptData("role", value)} />;
+        return <StepRole value={promptData.role} onChange={value => updatePromptData('role', value)} />
       case 2:
-        return <StepContext value={promptData.context} onChange={(value) => updatePromptData("context", value)} />;
+        return <StepContext value={promptData.context} onChange={value => updatePromptData('context', value)} />
       case 3:
-        return <StepTask value={promptData.task} onChange={(value) => updatePromptData("task", value)} />;
+        return <StepTask value={promptData.task} onChange={value => updatePromptData('task', value)} />
       case 4:
-        return <StepOutputFormat value={promptData.outputFormat} onChange={(value) => updatePromptData("outputFormat", value)} />;
+        return <StepOutputFormat value={promptData.outputFormat} onChange={value => updatePromptData('outputFormat', value)} />
       default:
-        return null;
+        return null
     }
-  };
+  }
 
-  const currentStepData = steps.find(step => step.id === currentStep);
-  const progress = currentStep === 0 ? 0 : (currentStep / 4) * 100;
+  const currentStepData = steps.find(step => step.id === currentStep)
+  const progress = currentStep === 0 ? 0 : (currentStep / 4) * 100
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -138,9 +167,12 @@ export const PromptManager = () => {
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-2xl font-semibold text-gray-800">
-                  {currentStep === 0 ? "Ready to Start" : `Step ${currentStep} of 4`}
+                  {currentStep === 0 ? 'Ready to Start' : `Step ${currentStep} of 4`}
                 </h2>
-                <span className="text-sm text-gray-500">{Math.round(progress)}% Complete</span>
+                <span className="text-sm text-gray-500">
+                  {Math.round(progress)}
+                  % Complete
+                </span>
               </div>
               <Progress value={progress} className="h-2" />
               <div className="mt-4">
@@ -198,17 +230,19 @@ export const PromptManager = () => {
                   className="flex items-center gap-2"
                   disabled={!promptData.role && !promptData.context && !promptData.task && !promptData.outputFormat}
                 >
-                  {copied ? (
-                    <>
-                      <Check className="w-4 h-4" />
-                      Copied!
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-4 h-4" />
-                      Copy
-                    </>
-                  )}
+                  {copied
+                    ? (
+                        <>
+                          <Check className="w-4 h-4" />
+                          Copied!
+                        </>
+                      )
+                    : (
+                        <>
+                          <Copy className="w-4 h-4" />
+                          Copy
+                        </>
+                      )}
                 </Button>
               </CardTitle>
             </CardHeader>
@@ -219,5 +253,5 @@ export const PromptManager = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

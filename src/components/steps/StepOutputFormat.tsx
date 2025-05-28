@@ -1,23 +1,22 @@
-
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from '@/components/ui/badge'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 
 interface StepOutputFormatProps {
-  value: string;
-  onChange: (value: string) => void;
+  value: string
+  onChange: (value: string) => void
 }
 
 const formatExamples = [
-  "Bullet points with explanations",
-  "Numbered step-by-step guide",
-  "Executive summary format",
-  "Technical documentation style",
-  "Creative narrative format",
-  "Structured JSON format",
-];
+  'Bullet points with explanations',
+  'Numbered step-by-step guide',
+  'Executive summary format',
+  'Technical documentation style',
+  'Creative narrative format',
+  'Structured JSON format',
+]
 
-export const StepOutputFormat = ({ value, onChange }: StepOutputFormatProps) => {
+export function StepOutputFormat({ value, onChange }: StepOutputFormatProps) {
   return (
     <div className="space-y-4">
       <div>
@@ -33,7 +32,7 @@ export const StepOutputFormat = ({ value, onChange }: StepOutputFormatProps) => 
         id="outputFormat"
         placeholder="Please format your response as..."
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={e => onChange(e.target.value)}
         className="min-h-[120px] resize-none border-2 border-gray-200 focus:border-blue-500 transition-colors"
       />
 
@@ -55,5 +54,5 @@ export const StepOutputFormat = ({ value, onChange }: StepOutputFormatProps) => 
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

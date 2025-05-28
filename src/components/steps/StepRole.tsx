@@ -1,23 +1,22 @@
-
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from '@/components/ui/badge'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 
 interface StepRoleProps {
-  value: string;
-  onChange: (value: string) => void;
+  value: string
+  onChange: (value: string) => void
 }
 
 const roleExamples = [
-  "Expert Data Scientist",
-  "Senior Software Engineer",
-  "Marketing Strategist",
-  "Technical Writer",
-  "UX/UI Designer",
-  "Business Analyst",
-];
+  'Expert Data Scientist',
+  'Senior Software Engineer',
+  'Marketing Strategist',
+  'Technical Writer',
+  'UX/UI Designer',
+  'Business Analyst',
+]
 
-export const StepRole = ({ value, onChange }: StepRoleProps) => {
+export function StepRole({ value, onChange }: StepRoleProps) {
   return (
     <div className="space-y-4">
       <div>
@@ -33,7 +32,7 @@ export const StepRole = ({ value, onChange }: StepRoleProps) => {
         id="role"
         placeholder="You are a..."
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={e => onChange(e.target.value)}
         className="min-h-[120px] resize-none border-2 border-gray-200 focus:border-blue-500 transition-colors"
       />
 
@@ -55,5 +54,5 @@ export const StepRole = ({ value, onChange }: StepRoleProps) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
