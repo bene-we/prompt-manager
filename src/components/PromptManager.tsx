@@ -25,26 +25,21 @@ export interface PromptData {
 const steps = [
   {
     id: 0,
-    title: 'Get Started',
-    description: 'Begin creating your structured prompt',
-  },
-  {
-    id: 1,
     title: 'Role',
     description: 'Define who the AI should act as',
   },
   {
-    id: 2,
+    id: 1,
     title: 'Context',
     description: 'Provide background information',
   },
   {
-    id: 3,
+    id: 2,
     title: 'Task',
     description: 'Specify what needs to be done',
   },
   {
-    id: 4,
+    id: 3,
     title: 'Output Format',
     description: 'Define the desired response structure',
   },
@@ -69,8 +64,18 @@ export function PromptManager() {
   }
 
   const nextStep = () => {
-    if (currentStep < 4) {
+    if (currentStep < 3) {
       setCurrentStep(currentStep + 1)
+    }
+    else {
+      // Reset form when reaching the end
+      setCurrentStep(0)
+      setPromptData({
+        role: '',
+        context: '',
+        task: '',
+        outputFormat: '',
+      })
     }
   }
 
@@ -124,30 +129,12 @@ export function PromptManager() {
   const renderStep = () => {
     switch (currentStep) {
       case 0:
-        return (
-          <div className="text-center space-y-6 py-8">
-            <div className="space-y-4">
-              <h3 className="text-2xl font-semibold text-gray-900">Welcome to Prompt Manager</h3>
-              <p className="text-gray-600 max-w-md mx-auto">
-                Create structured, effective prompts with our guided 4-step process.
-                Click "Start" to begin building your AI prompt.
-              </p>
-            </div>
-            <Button
-              onClick={nextStep}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-            >
-              Start Building Your Prompt
-            </Button>
-          </div>
-        )
-      case 1:
         return <StepRole value={promptData.role} onChange={value => updatePromptData('role', value)} />
-      case 2:
+      case 1:
         return <StepContext value={promptData.context} onChange={value => updatePromptData('context', value)} />
-      case 3:
+      case 2:
         return <StepTask value={promptData.task} onChange={value => updatePromptData('task', value)} />
-      case 4:
+      case 3:
         return <StepOutputFormat value={promptData.outputFormat} onChange={value => updatePromptData('outputFormat', value)} />
       default:
         return null
@@ -155,7 +142,9 @@ export function PromptManager() {
   }
 
   const currentStepData = steps.find(step => step.id === currentStep)
-  const progress = currentStep === 0 ? 0 : (currentStep / 4) * 100
+  const progress = (
+    Object.values(promptData).filter(value => value.trim() !== '').length / 4
+  ) * 100
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -167,7 +156,11 @@ export function PromptManager() {
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-2xl font-semibold text-gray-800">
-                  {currentStep === 0 ? 'Ready to Start' : `Step ${currentStep} of 4`}
+                  Step
+                  {' '}
+                  {currentStep + 1}
+                  {' '}
+                  of 4
                 </h2>
                 <span className="text-sm text-gray-500">
                   {Math.round(progress)}
@@ -190,31 +183,28 @@ export function PromptManager() {
           </Card>
 
           {/* Navigation */}
-          {currentStep > 0 && (
-            <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm">
-              <CardContent className="p-6">
-                <div className="flex justify-between">
-                  <Button
-                    variant="outline"
-                    onClick={prevStep}
-                    disabled={currentStep === 0}
-                    className="flex items-center gap-2"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                    Previous
-                  </Button>
-                  <Button
-                    onClick={nextStep}
-                    disabled={currentStep === 4}
-                    className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                  >
-                    Next
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+          <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm">
+            <CardContent className="p-6">
+              <div className="flex justify-between">
+                <Button
+                  variant="outline"
+                  onClick={prevStep}
+                  disabled={currentStep === 0}
+                  className="flex items-center gap-2"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  Previous
+                </Button>
+                <Button
+                  onClick={nextStep}
+                  className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                >
+                  {currentStep === 3 ? 'Start Over' : 'Next'}
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Preview Section */}
