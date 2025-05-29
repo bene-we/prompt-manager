@@ -54,7 +54,7 @@ export function PromptManager() {
     outputFormat: '',
   })
   const [copied, setCopied] = useState(false)
-  const [stepProgress, setStepProgress] = useState(0)
+  const [progress, setProgress] = useState(0)
   const [completedSteps, setCompletedSteps] = useState<number[]>([])
   const { toast } = useToast()
 
@@ -65,7 +65,7 @@ export function PromptManager() {
     }))
     // Update progress when user inputs data, but only if this step hasn't been completed yet
     if (value.trim() !== '' && !completedSteps.includes(currentStep)) {
-      setStepProgress(prev => Math.min(prev + 25, 100))
+      setProgress(prev => Math.min(prev + 25, 100))
       setCompletedSteps(prev => [...prev, currentStep])
     }
   }
@@ -75,14 +75,14 @@ export function PromptManager() {
       setCurrentStep(currentStep + 1)
       // Update progress when moving to next step, but only if this step hasn't been completed yet
       if (!completedSteps.includes(currentStep)) {
-        setStepProgress(prev => Math.min(prev + 25, 100))
+        setProgress(prev => Math.min(prev + 25, 100))
         setCompletedSteps(prev => [...prev, currentStep])
       }
     }
     else {
       // Reset form when reaching the end
       setCurrentStep(0)
-      setStepProgress(0)
+      setProgress(0)
       setCompletedSteps([])
       setPromptData({
         role: '',
@@ -156,9 +156,6 @@ export function PromptManager() {
   }
 
   const currentStepData = steps.find(step => step.id === currentStep)
-  const progress = stepProgress
-
-  console.log(progress)
 
   return (
     <div className="max-w-6xl mx-auto">
