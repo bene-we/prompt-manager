@@ -1,73 +1,43 @@
-# Welcome to your Lovable project
+# Prompt Manager
 
-## Project info
+A structured approach to creating effective AI prompts through a guided 4-step process.
 
-**URL**: https://lovable.dev/projects/aeaa6739-9a67-4bc0-b7e5-b00a2b28db29
+## Features
 
-## How can I edit this code?
+- **Guided Process**: Step-by-step prompt creation with clear instructions
+- **Role Definition**: Specify who the AI should act as
+- **Context Setting**: Provide relevant background information
+- **Task Specification**: Define clear objectives and requirements
+- **Output Format**: Structure the desired response format
+- **Live Preview**: See your prompt take shape in real-time
+- **Copy to Clipboard**: Easily copy your completed prompt
 
-There are several ways of editing your application.
+## Getting Started
 
-**Use Lovable**
+1. Clone the repository
+2. Install dependencies:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/aeaa6739-9a67-4bc0-b7e5-b00a2b28db29) and start prompting.
+   ```bash
+   pnpm install
+   ```
 
-Changes made via Lovable will be committed automatically to this repo.
+3. Start the development server:
 
-**Use your preferred IDE**
+   ```bash
+   pnpm dev
+   ```
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Development
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- Built with React and TypeScript
+- Uses Tailwind CSS for styling
+- Implements a modern, responsive design
+- Supports both light and dark themes
 
-Follow these steps:
+## Contributing
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## License
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/aeaa6739-9a67-4bc0-b7e5-b00a2b28db29) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+MIT
