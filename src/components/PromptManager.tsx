@@ -3,8 +3,20 @@ import {
   ChevronLeft,
   ChevronRight,
   Copy,
+  RefreshCw,
 } from 'lucide-react'
 import { useRef, useState } from 'react'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
@@ -53,7 +65,10 @@ const steps = [
 ]
 
 export function PromptManager() {
-  const [currentStep, setCurrentStep] = useState<PromptStep>(PromptStep.Role)
+  const FIRST_STEP = steps[0].id
+  const LAST_STEP = steps[steps.length - 1].id
+
+  const [currentStep, setCurrentStep] = useState<PromptStep>(FIRST_STEP)
   const [promptData, setPromptData] = useState<PromptData>({
     [PromptStep.Role]: '',
     [PromptStep.Context]: '',
@@ -76,10 +91,15 @@ export function PromptManager() {
       setProgress(prev => Math.min(prev + 25, 100))
       setCompletedSteps(prev => [...prev, step])
     }
+
+    if (value.trim() === '') {
+      setProgress(prev => Math.max(prev - 25, 0))
+      setCompletedSteps(prev => prev.filter(s => s !== step))
+    }
   }
 
   const nextStep = () => {
-    if (currentStep < PromptStep.OutputFormat) {
+    if (currentStep < LAST_STEP) {
       setCurrentStep(currentStep + 1)
       // Only update progress if this step has content and hasn't been completed yet
       if (promptData[currentStep].trim() && !completedSteps.includes(currentStep)) {
@@ -88,13 +108,13 @@ export function PromptManager() {
       }
     }
     // If we're on the last step and the output format is empty, focus the textarea
-    else if (currentStep === PromptStep.OutputFormat && !promptData[PromptStep.OutputFormat].trim()) {
+    else if (currentStep === LAST_STEP && !promptData[LAST_STEP].trim()) {
       textareaRef.current?.focus()
     }
   }
 
   const prevStep = () => {
-    if (currentStep > PromptStep.Role) {
+    if (currentStep > FIRST_STEP) {
       setCurrentStep(currentStep - 1)
     }
   }
@@ -140,6 +160,18 @@ export function PromptManager() {
     }
   }
 
+  const resetForm = () => {
+    setCurrentStep(PromptStep.Role)
+    setPromptData({
+      [PromptStep.Role]: '',
+      [PromptStep.Context]: '',
+      [PromptStep.Task]: '',
+      [PromptStep.OutputFormat]: '',
+    })
+    setProgress(0)
+    setCompletedSteps([])
+  }
+
   const renderStep = () => {
     switch (currentStep) {
       case PromptStep.Role:
@@ -156,7 +188,7 @@ export function PromptManager() {
   }
 
   const currentStepData = steps.find(step => step.id === currentStep)
-  const isDone = currentStep === PromptStep.OutputFormat && progress === 100
+  const isDone = currentStep === LAST_STEP && progress === 100
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -210,7 +242,7 @@ export function PromptManager() {
                 <Button
                   onClick={nextStep}
                   className="flex items-center gap-2"
-                  disabled={isDone}
+                  disabled={currentStep === PromptStep.OutputFormat}
                 >
                   {isDone ? 'Done!' : 'Next'}
                   <ChevronRight className="w-4 h-4" />
@@ -251,8 +283,36 @@ export function PromptManager() {
             </CardHeader>
             <CardContent>
               <PromptPreview prompt={generatePrompt()} />
+
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant={progress === 100 ? 'done' : 'outline'}
+                    className="w-full flex items-center justify-center gap-2"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                    Start Over
+                  </Button>
+                </AlertDialogTrigger>
+
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will reset all your inputs and start from the beginning. This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={resetForm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                      Start Over
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </CardContent>
           </Card>
+
         </div>
       </div>
     </div>
