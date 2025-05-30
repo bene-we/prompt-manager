@@ -4,7 +4,7 @@ import {
   ChevronRight,
   Copy,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
@@ -15,86 +15,86 @@ import { StepOutputFormat } from './steps/StepOutputFormat'
 import { StepRole } from './steps/StepRole'
 import { StepTask } from './steps/StepTask'
 
+enum PromptStep {
+  Role = 0,
+  Context = 1,
+  Task = 2,
+  OutputFormat = 3,
+}
+
 export interface PromptData {
-  role: string
-  context: string
-  task: string
-  outputFormat: string
+  [PromptStep.Role]: string
+  [PromptStep.Context]: string
+  [PromptStep.Task]: string
+  [PromptStep.OutputFormat]: string
 }
 
 const steps = [
   {
-    id: 0,
+    id: PromptStep.Role,
     title: 'Role',
     description: 'Define who the AI should act as',
   },
   {
-    id: 1,
+    id: PromptStep.Context,
     title: 'Context',
     description: 'Provide background information',
   },
   {
-    id: 2,
+    id: PromptStep.Task,
     title: 'Task',
     description: 'Specify what needs to be done',
   },
   {
-    id: 3,
+    id: PromptStep.OutputFormat,
     title: 'Output Format',
     description: 'Define the desired response structure',
   },
 ]
 
 export function PromptManager() {
-  const [currentStep, setCurrentStep] = useState(0)
+  const [currentStep, setCurrentStep] = useState<PromptStep>(PromptStep.Role)
   const [promptData, setPromptData] = useState<PromptData>({
-    role: '',
-    context: '',
-    task: '',
-    outputFormat: '',
+    [PromptStep.Role]: '',
+    [PromptStep.Context]: '',
+    [PromptStep.Task]: '',
+    [PromptStep.OutputFormat]: '',
   })
   const [copied, setCopied] = useState(false)
   const [progress, setProgress] = useState(0)
-  const [completedSteps, setCompletedSteps] = useState<number[]>([])
+  const [completedSteps, setCompletedSteps] = useState<PromptStep[]>([])
   const { toast } = useToast()
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const updatePromptData = (field: keyof PromptData, value: string) => {
+  const updatePromptData = (step: PromptStep, value: string) => {
     setPromptData(prev => ({
       ...prev,
-      [field]: value,
+      [step]: value,
     }))
     // Update progress when user inputs data, but only if this step hasn't been completed yet
-    if (value.trim() !== '' && !completedSteps.includes(currentStep)) {
+    if (value.trim() !== '' && !completedSteps.includes(step)) {
       setProgress(prev => Math.min(prev + 25, 100))
-      setCompletedSteps(prev => [...prev, currentStep])
+      setCompletedSteps(prev => [...prev, step])
     }
   }
 
   const nextStep = () => {
-    if (currentStep < 3) {
+    if (currentStep < PromptStep.OutputFormat) {
       setCurrentStep(currentStep + 1)
-      // Update progress when moving to next step, but only if this step hasn't been completed yet
-      if (!completedSteps.includes(currentStep)) {
+      // Only update progress if this step has content and hasn't been completed yet
+      if (promptData[currentStep].trim() && !completedSteps.includes(currentStep)) {
         setProgress(prev => Math.min(prev + 25, 100))
         setCompletedSteps(prev => [...prev, currentStep])
       }
     }
-    else {
-      // Reset form when reaching the end
-      setCurrentStep(0)
-      setProgress(0)
-      setCompletedSteps([])
-      setPromptData({
-        role: '',
-        context: '',
-        task: '',
-        outputFormat: '',
-      })
+    // If we're on the last step and the output format is empty, focus the textarea
+    else if (currentStep === PromptStep.OutputFormat && !promptData[PromptStep.OutputFormat].trim()) {
+      textareaRef.current?.focus()
     }
   }
 
   const prevStep = () => {
-    if (currentStep > 0) {
+    if (currentStep > PromptStep.Role) {
       setCurrentStep(currentStep - 1)
     }
   }
@@ -102,20 +102,20 @@ export function PromptManager() {
   const generatePrompt = () => {
     const parts = []
 
-    if (promptData.role) {
-      parts.push(promptData.role)
+    if (promptData[PromptStep.Role]) {
+      parts.push(promptData[PromptStep.Role])
     }
 
-    if (promptData.context) {
-      parts.push(promptData.context)
+    if (promptData[PromptStep.Context]) {
+      parts.push(promptData[PromptStep.Context])
     }
 
-    if (promptData.task) {
-      parts.push(promptData.task)
+    if (promptData[PromptStep.Task]) {
+      parts.push(promptData[PromptStep.Task])
     }
 
-    if (promptData.outputFormat) {
-      parts.push(promptData.outputFormat)
+    if (promptData[PromptStep.OutputFormat]) {
+      parts.push(promptData[PromptStep.OutputFormat])
     }
 
     return parts.join('\n\n')
@@ -142,20 +142,21 @@ export function PromptManager() {
 
   const renderStep = () => {
     switch (currentStep) {
-      case 0:
-        return <StepRole value={promptData.role} onChange={value => updatePromptData('role', value)} />
-      case 1:
-        return <StepContext value={promptData.context} onChange={value => updatePromptData('context', value)} />
-      case 2:
-        return <StepTask value={promptData.task} onChange={value => updatePromptData('task', value)} />
-      case 3:
-        return <StepOutputFormat value={promptData.outputFormat} onChange={value => updatePromptData('outputFormat', value)} />
+      case PromptStep.Role:
+        return <StepRole value={promptData[PromptStep.Role]} onChange={value => updatePromptData(PromptStep.Role, value)} />
+      case PromptStep.Context:
+        return <StepContext value={promptData[PromptStep.Context]} onChange={value => updatePromptData(PromptStep.Context, value)} />
+      case PromptStep.Task:
+        return <StepTask value={promptData[PromptStep.Task]} onChange={value => updatePromptData(PromptStep.Task, value)} />
+      case PromptStep.OutputFormat:
+        return <StepOutputFormat value={promptData[PromptStep.OutputFormat]} onChange={value => updatePromptData(PromptStep.OutputFormat, value)} ref={textareaRef} />
       default:
         return null
     }
   }
 
   const currentStepData = steps.find(step => step.id === currentStep)
+  const isDone = currentStep === PromptStep.OutputFormat && progress === 100
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -200,7 +201,7 @@ export function PromptManager() {
                 <Button
                   variant="outline"
                   onClick={prevStep}
-                  disabled={currentStep === 0}
+                  disabled={currentStep === PromptStep.Role}
                   className="flex items-center gap-2"
                 >
                   <ChevronLeft className="w-4 h-4" />
@@ -209,8 +210,9 @@ export function PromptManager() {
                 <Button
                   onClick={nextStep}
                   className="flex items-center gap-2"
+                  disabled={isDone}
                 >
-                  {currentStep === 3 ? 'Start Over' : 'Next'}
+                  {isDone ? 'Done!' : 'Next'}
                   <ChevronRight className="w-4 h-4" />
                 </Button>
               </div>
@@ -229,7 +231,7 @@ export function PromptManager() {
                   variant="outline"
                   onClick={copyToClipboard}
                   className="flex items-center gap-2"
-                  disabled={!promptData.role && !promptData.context && !promptData.task && !promptData.outputFormat}
+                  disabled={!promptData[PromptStep.Role] && !promptData[PromptStep.Context] && !promptData[PromptStep.Task] && !promptData[PromptStep.OutputFormat]}
                 >
                   {copied
                     ? (
